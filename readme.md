@@ -158,3 +158,33 @@ GET api/books?title=<InsertBookTile>
     }
     ...
 ```
+
+```sh
+GET api/wishlist
+```
+
+<b>Body</b>
+
+```sh
+
+```
+
+```sh
+POST api/wishlist/<ISBN>
+```
+
+<b>Body</b>
+
+```sh
+
+```
+
+```sh
+DELETE api/wishlist/<ISBN>
+```
+
+<b>Body</b>
+
+```sh
+
+```

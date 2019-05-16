@@ -11,6 +11,8 @@ db = SQLAlchemy(app)
 
 manual_session = create_session(app.config)
 
+test = ' add some test'
+
 
 class Student(db.Model):
     __tablename__ = 'students'
@@ -57,7 +59,9 @@ def getWishList():
 
 @app.route('/api/wishlist/<isbn>', methods=['DELETE'])
 def removeFromWishlist(isbn):
-    book = Book.query.filter(Book.id == isbn)
+    manual_session.query(Book) \
+        .filter(Book.id == isbn).delete()
+    manual_session.commit()
     return jsonify({'message': f'Delete {isbn}.'}), 200
 
 
@@ -84,7 +88,7 @@ def addToWishlist(isbn):
 #     manual_session.add(student)
 #     manual_session.commit()
 #     return jsonify({'message': 'New student successfully created.'}), 201
-# GET DELETE ROUTES
+# GET DELETE ROUTES --done
 # TO DO sync up database ---done
 # Easiest DB POSTGRES/ SQLite? --done psql
 # TO DO Deep Dive into Documentation

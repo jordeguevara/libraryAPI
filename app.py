@@ -8,7 +8,10 @@ from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wishlist'
+
+
 db = SQLAlchemy(app)
+
 
 manual_session = create_session(app.config)
 

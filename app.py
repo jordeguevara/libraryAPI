@@ -1,13 +1,20 @@
 
+import os
 import psycopg2
 import requests
-from util import checkBookProperties, prepareResponseListOfBooks, create_session
+from util import checkBookProperties, prepareResponseListOfBooks, create_session, prepareWishList
 from flask import Flask, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
+db_URL = os.getenv("DATABASE_URL")
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wishlist'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_URL
 
 
 db = SQLAlchemy(app)
@@ -18,8 +25,12 @@ manual_session = create_session(app.config)
 
 class Book(db.Model):
     __tablename__ = 'books'
-    id = db.Column(db.String(200), primary_key=True)
-    title = db.Column(db.String(120), unique=False, nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    isbn = db.Column(db.String(200), unique=False, nullable=True)
+    title = db.Column(db.String(100), unique=False, nullable=True)
+    numpages = db.Column(db.Integer, unique=False, nullable=True)
+    author = db.Column(db.Text, unique=False, nullable=True)
+    publishdate = db.Column(db.String(100), unique=False, nullable=True)
 
 
 @app.route('/')
@@ -37,7 +48,7 @@ def getBookSearchData():
         bookList = prepareResponseListOfBooks(jsonResponseObj)
         return jsonify(Books=bookList)
     except requests.exceptions.RequestException as e:
-        print(e)
+        return jsonify({'debug': e}), 404
 
 
 @app.route('/api/book/<isbn>')
@@ -52,7 +63,8 @@ def getWishList():
     query = Book.query.all()
     lst = []
     for book in query:
-        lst.append({'title': book.title, 'id:': book.id})
+        lst.append({'title': book.title, 'id:': book.id, 'isbn': book.isbn,
+                    'publish_date': book.publishdate, 'num_pages': book.numpages})
     return jsonify(myWishlist=lst), 200
 
 
@@ -70,11 +82,16 @@ def removeFromWishlist(isbn):
 def addToWishlist(isbn):
     try:
         response = requests.get(f'http://127.0.0.1:5000/api/book/{isbn}')
-        bookData = response.json()
         id = f'ISBN:{isbn}'
+        bookData = prepareWishList(response.json(), id)
+        print(f'book Data => {bookData}')
         book = Book(
-            id=isbn,
-            title=bookData[id]["title"]
+            isbn=isbn,
+            title=bookData[0]["title"],
+            author=bookData[0]["authors"],
+            numpages=bookData[0]["number_of_pages"],
+            publishdate=bookData[0]["publish_date"]
+
         )
         manual_session.add(book)
         manual_session.commit()

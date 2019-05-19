@@ -29,9 +29,9 @@ built in DB or an online one).
 
 Technologies used: Flask, postgres
 
-Getting Started
+##Getting Started
 
-Building Application
+<b>Building Application</b>
 Create Environment
 
 ---
@@ -50,6 +50,10 @@ Installing the Database (Postgres)
 `pip install marshmallow-sqlalchemy`
 `pip install Flask-Marshmallow`
 `pip install psycopg2`
+
+PSQL
+
+`CREATE TABLE books (id varchar(100) PRIMARY KEY, title varchar(100), numpages integer, author TEXT [], publishdate varchar(100))`
 
 ## Documentation:
 
@@ -159,6 +163,8 @@ GET api/books?title=<InsertBookTile>
     ...
 ```
 
+<i>Retrieve collection of books in Wishlist </i>
+
 ```sh
 GET api/wishlist
 ```
@@ -169,6 +175,8 @@ GET api/wishlist
 
 ```
 
+<i>Adds to a collection of books in Wishlist passing in ISBN in URL route</i>
+
 ```sh
 POST api/wishlist/<ISBN>
 ```
@@ -178,6 +186,8 @@ POST api/wishlist/<ISBN>
 ```sh
 
 ```
+
+<i>removes from a collection of books in Wishlist by passing in ISBN in URL route</i>
 
 ```sh
 DELETE api/wishlist/<ISBN>

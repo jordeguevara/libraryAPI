@@ -1,5 +1,6 @@
 from app import app
 import unittest
+from util import formatAuthors
 
 
 testBookData = {
@@ -43,6 +44,21 @@ class FlaskTestCase(unittest.TestCase):
     #     tester = app.test_client(self)
     #     response = tester.post('/api/wishlist/9780751321036')
     #     self.assertEqual(response.status_code, 201)
+
+    def test_formatAuthor(self):
+        tester = app.test_client(self)
+        authors = [
+            {
+                "name": "Jorde G",
+            },
+            {
+                "name": "Moe P.",
+            }
+        ]
+
+        correctFormat = "Jorde G Moe P. "
+        authorsFormatted = formatAuthors(authors)
+        self.assertEqual(authorsFormatted, correctFormat)
 
 
 if __name__ == '__main__':

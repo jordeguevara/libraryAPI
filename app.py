@@ -10,7 +10,6 @@ from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
 load_dotenv()
 
-
 db_URL = os.getenv("DATABASE_URL")
 
 app = Flask(__name__)
@@ -63,7 +62,7 @@ def getWishList():
     query = Book.query.all()
     lst = []
     for book in query:
-        lst.append({'title': book.title, 'id:': book.id, 'isbn': book.isbn,
+        lst.append({'title': book.title, 'id': book.id, 'isbn': book.isbn, 'author': book.author,
                     'publish_date': book.publishdate, 'num_pages': book.numpages})
     return jsonify(myWishlist=lst), 200
 
@@ -75,7 +74,7 @@ def removeFromWishlist(isbn):
     if(exisit == 0):  # DoesNotExisit
         return jsonify({'message': f'Book does not exisit in collection'}), 200
     manual_session.commit()
-    return jsonify({'message': f'Deleted {isbn}.'}), 200
+    return jsonify({'message': f'Deleted book from  wishlist collection.'}), 200
 
 
 @app.route('/api/wishlist/<isbn>', methods=['POST'])

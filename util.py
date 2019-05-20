@@ -16,7 +16,7 @@ def formatAuthors(authors):
         return "none"
     authorsFormatted = ""
     for author in authors:
-        authorsFormatted += author["name"]
+        authorsFormatted += author["name"] + ' '
     return authorsFormatted
 
 # Check if certain props exisit: authors, publish date, isbn, # pages if not will state not Avail.

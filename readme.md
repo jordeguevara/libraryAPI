@@ -1,4 +1,4 @@
-Case:
+# Case:
 
 1. Create an API that allows users to search for books using the open library API
 
@@ -29,31 +29,74 @@ built in DB or an online one).
 
 Technologies used: Flask, postgres
 
-##Getting Started
+# Getting Started
+
+In order for application to run, please install <b>python3</b> and <b>postgres</b> on your computer
 
 <b>Building Application</b>
-Create Environment
+
+1)Clone repo
+
+```
+git clone https://github.com/jordeguevara/librayAPI.git
+```
+
+Then make your way into project directory
+
+```
+cd librayAPI
+```
+
+2)Create virtual Environment
 
 ---
 
-`mkdir OpenLibAPI cd OpenLibAPI python3 -m venv venv`
+`python3 -m venv venv`
 
 Activate the enviroment
 
 `. venv/bin/activate`
 
+## on Windows
+
+```
+py -3 -m venv venv
+\Python27\Scripts\virtualenv.exe venv
+```
+
+3. Install Depedencies
+
+```sh
+pip install Flask
+pip install os psycopg2 requests python-dotenv
+```
+
 Installing the Database (Postgres)
 
-`pip install Flask-SQLAlchemy`
-`pip install Flask-Migrate`
-`pip install marshmallow`
-`pip install marshmallow-sqlalchemy`
-`pip install Flask-Marshmallow`
-`pip install psycopg2`
+```pip install Flask-SQLAlchemy
 
-PSQL
+pip install psycopg2
+```
 
-`CREATE TABLE books (id varchar(100) PRIMARY KEY, title varchar(100), numpages integer, author TEXT [], publishdate varchar(100))`
+<b>PSQL</b>
+
+open up terminal and start PSQL by
+
+```
+psql -U postgres
+```
+
+create books table
+
+```
+CREATE TABLE books (id serial PRIMARY KEY, isbn varchar(100), title varchar(100), numpages integer, author varchar(100), publishdate varchar(100));
+```
+
+run tests
+
+```
+python3 test.py -v
+```
 
 ## Documentation:
 
@@ -169,10 +212,23 @@ GET api/books?title=<InsertBookTile>
 GET api/wishlist
 ```
 
+<i>Retreive books in wishlist ollection</i>
+
 <b>Body</b>
 
 ```sh
-
+{
+  "myWishlist": [
+    {
+      "author": "J. R. R. Tolkien",
+      "id": 7,
+      "isbn": "8020409262",
+      "num_pages": -1,
+      "publish_date": "2001",
+      "title": "Pán prstenů: Společentvo prstenu"
+    }
+  ]
+}
 ```
 
 <i>Adds to a collection of books in Wishlist passing in ISBN in URL route</i>
@@ -182,19 +238,40 @@ POST api/wishlist/<ISBN>
 ```
 
 <b>Body</b>
+<i> Success <i>
 
 ```sh
-
+{
+  "message": "New book successfully added to WishList."
+}
 ```
+
+<i> negative # of pages indicates it was not present from OpenLib </i>
 
 <i>removes from a collection of books in Wishlist by passing in ISBN in URL route</i>
 
 ```sh
-DELETE api/wishlist/<ISBN>
+DELETE api/wishlist/<id>
 ```
 
 <b>Body</b>
 
+<i>No Book Exisits</i>
+
 ```sh
+{
+  "message": "Book does not exisit in collection"
+}
+```
+
+<i>Success</i>
 
 ```
+{
+    "message": "Deleted book from  wishlist collection."
+}
+```
+
+<b>Postman Doc. </b>
+
+https://documenter.getpostman.com/view/5049741/S1M3v5Uc?version=latest
